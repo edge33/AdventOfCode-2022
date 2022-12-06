@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/jest': ^27.0.3
+  '@types/node': ^18.11.11
   '@typescript-eslint/eslint-plugin': ^5.5.0
   '@typescript-eslint/parser': ^5.5.0
   eslint: ^8.3.0
@@ -16,6 +17,7 @@ specifiers:
 
 devDependencies:
   '@types/jest': 27.5.2
+  '@types/node': 18.11.11
   '@typescript-eslint/eslint-plugin': 5.45.1_tdm6ms4ntwhlpozn7kjqrhum74
   '@typescript-eslint/parser': 5.45.1_s5ps7njkmjlaqajutnox5ntcla
   eslint: 8.29.0
@@ -25,7 +27,7 @@ devDependencies:
   nodemon: 2.0.20
   prettier: 2.8.0
   ts-jest: 27.1.5_htdswtvm6wkqnx2dmqqf2ytbxi
-  ts-node: 10.9.1_typescript@4.9.3
+  ts-node: 10.9.1_zhirybrk4zoofuxp64necizyzy
   typescript: 4.9.3
 
 packages:
@@ -2163,7 +2165,7 @@ packages:
       pretty-format: 27.5.1
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1_typescript@4.9.3
+      ts-node: 10.9.1_zhirybrk4zoofuxp64necizyzy
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -3338,7 +3340,7 @@ packages:
       yargs-parser: 20.2.9
     dev: true
 
-  /ts-node/10.9.1_typescript@4.9.3:
+  /ts-node/10.9.1_zhirybrk4zoofuxp64necizyzy:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -3357,6 +3359,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
+      '@types/node': 18.11.11
       acorn: 8.8.1
       acorn-walk: 8.2.0
       arg: 4.1.3
