@@ -55,8 +55,6 @@ const findBestPath = (
   strategy = 'asc'
 ) => {
   const toVisit = new Map();
-  let end: number[];
-
   const nodes: Node[][] = input.split('\n').map((l, i) =>
     l.split('').map((item, j) => {
       let elevation: number = item.charCodeAt(0) - 97;
@@ -65,7 +63,6 @@ const findBestPath = (
       }
       if (item === 'E') {
         elevation = 26;
-        end = [i, j];
       }
       const node = {
         i,
