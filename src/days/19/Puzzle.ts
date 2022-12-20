@@ -1,3 +1,7 @@
+/**
+ * huge thanks to Hyper neutrino: https://www.youtube.com/watch?v=H3PSODv4nf0
+ */
+
 import Puzzle from '../../types/AbstractPuzzle';
 
 const zip = (arr: number[], ...arrs: number[][]) => {
