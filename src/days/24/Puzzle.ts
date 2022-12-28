@@ -11,47 +11,52 @@ type Blizzard = {
   direction: string;
 };
 
-const isBlizzard = (element: string) => ['^', 'v', '<', '>'].includes(element);
+const isBlizzard = (element: string[]) =>
+  element.some((e) => ['^', 'v', '<', '>'].includes(e));
 
 const moveBlizzard = (
-  blizzard: Blizzard,
+  blizzards: string[],
+  i: number,
+  j: number,
   rows: number,
   cols: number
-): Blizzard => {
-  const { i, j, direction } = blizzard;
-  switch (direction) {
-    case '^':
-      if (i - 1 === 0) {
-        return { i: rows - 2, j, direction };
-      } else {
-        return { i: i - 1, j, direction };
-      }
+): Blizzard[] => {
+  return blizzards.map((blizzard) => {
+    const direction = blizzard;
+    switch (direction) {
+      case '^':
+        if (i - 1 === 0) {
+          return { i: rows - 2, j, direction };
+        } else {
+          return { i: i - 1, j, direction };
+        }
 
-    case 'v':
-      if (i + 1 === rows - 1) {
-        return { i: 1, j, direction };
-      } else {
-        return { i: i + 1, j, direction };
-      }
+      case 'v':
+        if (i + 1 === rows - 1) {
+          return { i: 1, j, direction };
+        } else {
+          return { i: i + 1, j, direction };
+        }
 
-    case '>':
-      if (j + 1 === cols - 1) {
-        return { i, j: 1, direction };
-      } else {
-        return { i, j: j + 1, direction };
-      }
-    case '<':
-      if (j - 1 === 0) {
-        return { i, j: cols - 2, direction };
-      } else {
-        return { i, j: j - 1, direction };
-      }
-  }
+      case '>':
+        if (j + 1 === cols - 1) {
+          return { i, j: 1, direction };
+        } else {
+          return { i, j: j + 1, direction };
+        }
+      case '<':
+        if (j - 1 === 0) {
+          return { i, j: cols - 2, direction };
+        } else {
+          return { i, j: j - 1, direction };
+        }
+    }
+  });
 };
 
 const getAdjs = (
   state: State,
-  blizzards: Blizzard[],
+  blizzards: string[][][],
   rows: number,
   cols: number
 ) => {
@@ -59,7 +64,7 @@ const getAdjs = (
   const adjs: State[] = [];
 
   // do nothing
-  if (!blizzards.find(({ i: bI, j: bJ }) => i === bI && j === bJ)) {
+  if (!isBlizzard(blizzards[i][j])) {
     adjs.push({ position: [i, j], cost: state.cost + 1 });
   }
 
@@ -67,8 +72,7 @@ const getAdjs = (
   if (
     (i - 1 === 0 && j === 1) ||
     (i - 1 === rows - 1 && j === cols - 2) ||
-    (i - 1 > 0 &&
-      !blizzards.find(({ i: bI, j: bJ }) => i - 1 === bI && j === bJ))
+    (i - 1 > 0 && !isBlizzard(blizzards[i - 1][j]))
   ) {
     adjs.push({
       position: [i - 1, j],
@@ -79,8 +83,7 @@ const getAdjs = (
   if (
     (i + 1 === 0 && j === 1) ||
     (i + 1 === rows - 1 && j === cols - 2) ||
-    (i + 1 < rows - 1 &&
-      !blizzards.find(({ i: bI, j: bJ }) => i + 1 === bI && j === bJ))
+    (i + 1 < rows - 1 && !isBlizzard(blizzards[i + 1][j]))
   ) {
     adjs.push({
       position: [i + 1, j],
@@ -92,7 +95,7 @@ const getAdjs = (
     j + 1 < cols - 1 &&
     i > 0 &&
     i < rows - 1 &&
-    !blizzards.find(({ i: bI, j: bJ }) => i === bI && j + 1 === bJ)
+    !isBlizzard(blizzards[i][j + 1])
   ) {
     adjs.push({
       position: [i, j + 1],
@@ -100,12 +103,7 @@ const getAdjs = (
     });
   }
   // west;
-  if (
-    j - 1 > 0 &&
-    i > 0 &&
-    i < rows - 1 &&
-    !blizzards.find(({ i: bI, j: bJ }) => i === bI && j - 1 === bJ)
-  ) {
+  if (j - 1 > 0 && i > 0 && i < rows - 1 && !isBlizzard(blizzards[i][j - 1])) {
     adjs.push({
       position: [i, j - 1],
       cost: state.cost + 1,
@@ -115,35 +113,54 @@ const getAdjs = (
   return adjs;
 };
 
-const simulateBlizzards = (blizzards: Blizzard[], rows: number, cols: number) =>
-  blizzards.map((b) => moveBlizzard(b, rows, cols));
+const simulateBlizzards = (map: string[][][], rows: number, cols: number) => {
+  const newMap = new Array(map.length);
+  for (let i = 0; i < newMap.length; i++) {
+    newMap[i] = map[i].map((c) => (c[0] === '#' ? ['#'] : ['.']));
+  }
+
+  for (let i = 0; i < newMap.length; i++) {
+    for (let j = 0; j < newMap[i].length; j++) {
+      const blizzardsInPlace = map[i][j].filter((item) =>
+        ['^', 'v', '<', '>'].includes(item)
+      );
+      if (blizzardsInPlace.length > 0) {
+        const moved = moveBlizzard(blizzardsInPlace, i, j, rows, cols);
+        for (const currentBlizzard of moved) {
+          newMap[currentBlizzard.i][currentBlizzard.j].push(
+            currentBlizzard.direction
+          );
+          newMap[currentBlizzard.i][currentBlizzard.j] = newMap[
+            currentBlizzard.i
+          ][currentBlizzard.j].filter((item: string) => item !== '.');
+        }
+      }
+    }
+  }
+  return newMap;
+};
 
 const buildKey = ({ position: [i, j], cost }: State) => `${i},${j},${cost}`;
 
 const parseInput = (input: string) => {
   const startPosition = [0, 1];
-  const blizzards: Blizzard[] = [];
   const lines = input.split(/\r?\n/);
   const rows = lines.length;
   const cols = lines[0].length;
+  const map: string[][][] = new Array<string[][]>(new Array(lines));
   for (let i = 0; i < lines.length; i++) {
+    map[i] = new Array(cols);
     for (let j = 0; j < lines[0].length; j++) {
-      const element = lines[i][j];
-      if (isBlizzard(element)) {
-        blizzards.push({ i, j, direction: element });
-      }
+      map[i][j] = [lines[i][j]];
     }
   }
-  const blizzardsInTime: Blizzard[][] = [
-    simulateBlizzards(blizzards, rows, cols),
-  ];
-
+  const blizzardsInTime: string[][][][] = [simulateBlizzards(map, rows, cols)];
   const endPosition = [rows - 1, cols - 2];
   return { startPosition, endPosition, blizzardsInTime, rows, cols };
 };
 
 const findShortestPath = (
-  blizzardsInTime: Blizzard[][],
+  blizzardsInTime: string[][][][],
   startPosition: number[],
   endPosition: number[],
   rows: number,
