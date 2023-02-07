@@ -32,7 +32,6 @@ const dfs = (
   let maxVal = amt[3] + bots[3] * time;
 
   for (const [botType, recipe] of bp.entries()) {
-    // console.log(botType, recipe);
     if (botType !== 3 && bots[botType] >= maxSpend[botType]) {
       continue;
     }
